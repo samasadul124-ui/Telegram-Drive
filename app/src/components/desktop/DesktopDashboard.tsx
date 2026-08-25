@@ -42,6 +42,7 @@ import { KeyboardShortcutsDialog } from './dashboard/KeyboardShortcutsDialog';
 import { DriveConceptTour, SupporterReminderDialog } from './dashboard/DriveConceptTour';
 import { HelpCenterDialog } from './dashboard/HelpCenterDialog';
 import { SyncDashboard } from './sync/SyncDashboard';
+import { SpecialView } from '../special/SpecialView';
 import { Files, Link, Copy, Check, X, Loader2, Share2 } from 'lucide-react';
 
 // Hooks
@@ -102,6 +103,7 @@ export function Dashboard({ onLogout }: { onLogout: () => void }) {
     const supporterPromptDueRef = useRef(false);
     const [createFolderRequest, setCreateFolderRequest] = useState(0);
     const [activeSmartView, setActiveSmartView] = useState<SmartView | null>('recents');
+    const [showSpecial, setShowSpecial] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState<TelegramFile[]>([]);
     const [searchFilters, setSearchFilters] = useState<FileSearchFilters>(DEFAULT_SEARCH_FILTERS);
@@ -916,9 +918,16 @@ export function Dashboard({ onLogout }: { onLogout: () => void }) {
                 createFolderRequest={createFolderRequest}
                 activeSmartView={activeSmartView}
                 onSmartViewChange={setActiveSmartView}
+                specialActive={showSpecial}
+                onSpecialClick={() => setShowSpecial(true)}
             />
 
-            <main className="flex min-w-0 flex-1 flex-col">
+            <main className="relative flex min-w-0 flex-1 flex-col">
+                {showSpecial && (
+                    <div className="absolute inset-0 z-50 bg-app-base">
+                        <SpecialView onClose={() => setShowSpecial(false)} />
+                    </div>
+                )}
                 <TopBar
                     currentFolderName={currentViewName}
                     selectedIds={selectedIds}

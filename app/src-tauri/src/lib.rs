@@ -91,6 +91,10 @@ pub mod upload_service;
 #[cfg(not(any(target_os = "android", target_os = "ios")))]
 pub mod webdav;
 
+/// Second storage backend: TG Cloud (the "Special" tab).
+/// Independent of the normal Telegram Drive pipeline.
+pub mod tgcloud;
+
 /// Single source of truth for the Actix streaming server port.
 /// Referenced in lib.rs (server startup) and exposed to the frontend
 /// via cmd_get_stream_info so no component ever hardcodes the port.
@@ -1141,6 +1145,18 @@ pub fn run() {
             }
             let sync_engine = sync_engine::SyncEngine::new(db_pool.clone(), app.handle().clone());
             app.manage(sync_engine);
+
+            // TG Cloud second storage backend (Special tab). Isolated DB and
+            // bot pool; does not touch the normal Telegram Drive pipeline.
+            match tgcloud::TGCloudProvider::new(app.handle()) {
+                Ok(provider) => {
+                    log::info!("TG Cloud provider initialized");
+                    app.manage(provider);
+                }
+                Err(error) => {
+                    log::error!("Failed to initialize TG Cloud provider: {error}");
+                }
+            }
             let app_for_sync = app.handle().clone();
             tauri::async_runtime::spawn(async move {
                 if let Err(error) = app_for_sync.state::<sync_engine::SyncEngine>().start().await {
@@ -1431,6 +1447,26 @@ pub fn run() {
             crypto_commands::cmd_generate_recovery_key,
             crypto_commands::cmd_get_file_encryption_info,
             crypto_commands::cmd_verify_encrypted_file,
+            // TG Cloud (Special tab) second storage backend
+            tgcloud::commands::tgcloud_get_config,
+            tgcloud::commands::tgcloud_save_config,
+            tgcloud::commands::tgcloud_test_bot_token,
+            tgcloud::commands::tgcloud_chunk_size,
+            tgcloud::commands::tgcloud_max_bots,
+            tgcloud::commands::tgcloud_list_files,
+            tgcloud::commands::tgcloud_list_folders,
+            tgcloud::commands::tgcloud_create_folder,
+            tgcloud::commands::tgcloud_delete_folder,
+            tgcloud::commands::tgcloud_delete_file,
+            tgcloud::commands::tgcloud_rename_file,
+            tgcloud::commands::tgcloud_move_file,
+            tgcloud::commands::tgcloud_upload_file,
+            tgcloud::commands::tgcloud_cancel_upload,
+            tgcloud::commands::tgcloud_download_file,
+            tgcloud::commands::tgcloud_create_share,
+            tgcloud::commands::tgcloud_import_share,
+            tgcloud::commands::tgcloud_create_backup,
+            tgcloud::commands::tgcloud_save_file,
         ])
         .build(tauri::generate_context!())
         .expect("error while building tauri application");

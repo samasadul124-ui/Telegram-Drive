@@ -48,6 +48,23 @@ async-stream = "0.3"
 actix-rt = "2"
 tauri-plugin-process = "2"
 bitflags = "=2.10.0"
+
+# --- TG Cloud second storage backend ---
+# All of these (except aes-gcm) are already in the dependency tree as
+# transitive crates; declaring them directly pins the same versions.
+reqwest = { version = "0.12", features = ["multipart", "stream", "rustls-tls", "json"], default-features = false }
+md5 = "0.8"
+uuid = { version = "1", features = ["v4"] }
+flate2 = "1"
+zip = { version = "2", default-features = false, features = ["deflate"] }
+pbkdf2 = { version = "0.12", default-features = false }
+hmac = "0.12"
+sha2 = "0.10"
+cbc = { version = "0.1", features = ["block-padding"] }
+aes = "0.8"
+aes-gcm = "0.10"
+base64 = "0.21"
+anyhow = "1"
 tauri-plugin-deep-link = "2"
 tauri-plugin-clipboard-manager = "2"
 rand = "0.9"

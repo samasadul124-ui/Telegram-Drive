@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { HardDrive, Folder, Plus, RefreshCw, LogOut, ChevronLeft, ChevronRight, Settings2, Trash2, Check, X, Eye, EyeOff, Clock3, Star, Pin, FileWarning, CalendarClock, Copy, Database } from 'lucide-react';
+import { HardDrive, Folder, Plus, RefreshCw, LogOut, ChevronLeft, ChevronRight, Settings2, Trash2, Check, X, Eye, EyeOff, Clock3, Star, Pin, FileWarning, CalendarClock, Copy, Database, Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { SidebarItem } from './SidebarItem';
 import { BandwidthWidget } from './BandwidthWidget';
@@ -115,12 +115,15 @@ interface SidebarProps {
     createFolderRequest?: number;
     activeSmartView?: SmartView | null;
     onSmartViewChange?: (view: SmartView | null) => void;
+    specialActive?: boolean;
+    onSpecialClick?: () => void;
 }
 
 export function Sidebar({
     folders, groups = [], activeFolderId, setActiveFolderId, onDelete, onRename, onToggleVisibility, onExportInvite, onCreate,
     isSyncing, isConnected, onSync, onLogout, bandwidth,
-    onAssignFolderToGroup, onCreateGroup, onUpdateGroup, onDeleteGroup, createFolderRequest = 0, activeSmartView = null, onSmartViewChange
+    onAssignFolderToGroup, onCreateGroup, onUpdateGroup, onDeleteGroup, createFolderRequest = 0, activeSmartView = null, onSmartViewChange,
+    specialActive = false, onSpecialClick,
 }: SidebarProps) {
     const [showNewFolderInput, setShowNewFolderInput] = useState(false);
     const { t } = useTranslation();
@@ -380,6 +383,19 @@ export function Sidebar({
                         </button>
                     ))}
                     {!settings.sidebarCollapsed && <div className="my-2 h-px bg-app-border-subtle" />}
+
+                    {/* TG Cloud — second storage backend ("Special" tab) */}
+                    <button
+                        type="button"
+                        onClick={() => onSpecialClick?.()}
+                        title="Special — TG Cloud"
+                        aria-current={specialActive ? 'page' : undefined}
+                        className={`quiet-control flex h-8 w-full items-center ${settings.sidebarCollapsed ? 'justify-center' : 'gap-2 px-2.5'} text-ui font-medium ${specialActive ? 'bg-app-selected text-app-accent' : 'text-app-text-secondary hover:text-app-text'}`}
+                    >
+                        <Sparkles className="h-4 w-4 shrink-0" />
+                        {!settings.sidebarCollapsed && <span>Special</span>}
+                    </button>
+
                     <SidebarItem
                         icon={HardDrive}
                         label={t('common.saved_messages')}

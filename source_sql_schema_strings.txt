@@ -1,0 +1,80 @@
+                    CREATE TABLE IF NOT EXISTS gallery_media (
+                    CREATE TABLE IF NOT EXISTS sync_logs (
+                    CREATE TABLE IF NOT EXISTS sync_metadata (
+    CREATE INDEX IF NOT EXISTS `index_WorkSpec_period_start_time` ON `workspec`(`period_start_time`)
+    CREATE TABLE IF NOT EXISTS `SystemIdInfo` (`work_spec_id` TEXT NOT NULL, `system_id`
+    CREATE TABLE IF NOT EXISTS `WorkProgress` (`work_spec_id` TEXT NOT NULL, `progress`
+IALTER TABLE `WorkSpec` ADD COLUMN `generation` INTEGER NOT NULL DEFAULT 0
+eALTER TABLE `WorkSpec` ADD COLUMN `next_schedule_time_override_generation` INTEGER NOT NULL DEFAULT 0
+lALTER TABLE `WorkSpec` ADD COLUMN `next_schedule_time_override` INTEGER NOT NULL DEFAULT 9223372036854775807
+MALTER TABLE `WorkSpec` ADD COLUMN `stop_reason` INTEGER NOT NULL DEFAULT -256
+8ALTER TABLE `_new_SystemIdInfo` RENAME TO `SystemIdInfo`
+0ALTER TABLE `_new_WorkSpec` RENAME TO `WorkSpec`
+BALTER TABLE cloud_files ADD COLUMN uploader_tokens TEXT DEFAULT ''
+FALTER TABLE download_tasks ADD COLUMN chunk_file_ids TEXT DEFAULT NULL
+MALTER TABLE download_tasks ADD COLUMN completed_chunks_json TEXT DEFAULT NULL
+FALTER TABLE download_tasks ADD COLUMN temp_chunk_dir TEXT DEFAULT NULL
+MALTER TABLE download_tasks ADD COLUMN total_chunks INTEGER NOT NULL DEFAULT 0
+DALTER TABLE gallery_media ADD COLUMN deleted_at INTEGER DEFAULT NULL
+AALTER TABLE gallery_media ADD COLUMN telegram_file_unique_id TEXT
+BALTER TABLE gallery_media ADD COLUMN telegram_uploader_tokens TEXT
+KALTER TABLE upload_tasks ADD COLUMN completed_chunks_json TEXT DEFAULT NULL
+=ALTER TABLE upload_tasks ADD COLUMN file_id TEXT DEFAULT NULL
+KALTER TABLE upload_tasks ADD COLUMN token_offset INTEGER NOT NULL DEFAULT 0
+PALTER TABLE workspec ADD COLUMN `out_of_quota_policy` INTEGER NOT NULL DEFAULT 0
+NALTER TABLE workspec ADD COLUMN `run_in_foreground` INTEGER NOT NULL DEFAULT 0
+ZALTER TABLE workspec ADD COLUMN `trigger_content_update_delay` INTEGER NOT NULL DEFAULT -1
+WALTER TABLE workspec ADD COLUMN `trigger_max_content_delay` INTEGER NOT NULL DEFAULT -1
+aCREATE INDEX IF NOT EXISTS `index_Dependency_prerequisite_id` ON `Dependency` (`prerequisite_id`)
+[CREATE INDEX IF NOT EXISTS `index_Dependency_work_spec_id` ON `Dependency` (`work_spec_id`)
+WCREATE INDEX IF NOT EXISTS `index_WorkName_work_spec_id` ON `WorkName` (`work_spec_id`)
+aCREATE INDEX IF NOT EXISTS `index_WorkSpec_last_enqueue_time` ON `WorkSpec` (`last_enqueue_time`)
+`CREATE INDEX IF NOT EXISTS `index_WorkSpec_last_enqueue_time` ON`WorkSpec` (`last_enqueue_time`)
+aCREATE INDEX IF NOT EXISTS `index_WorkSpec_period_start_time` ON `WorkSpec` (`period_start_time`)
+iCREATE INDEX IF NOT EXISTS `index_WorkSpec_schedule_requested_at` ON `WorkSpec` (`schedule_requested_at`)
+hCREATE INDEX IF NOT EXISTS `index_WorkSpec_schedule_requested_at`ON `WorkSpec` (`schedule_requested_at`)
+UCREATE INDEX IF NOT EXISTS `index_WorkTag_work_spec_id` ON `WorkTag` (`work_spec_id`)
+SCREATE INDEX IF NOT EXISTS `index_sync_logs_device_id` ON `sync_logs` (`device_id`)
+WCREATE INDEX IF NOT EXISTS `index_sync_logs_is_uploaded` ON `sync_logs` (`is_uploaded`)
+SCREATE INDEX IF NOT EXISTS `index_sync_logs_timestamp` ON `sync_logs` (`timestamp`)
+LCREATE INDEX IF NOT EXISTS index_sync_logs_device_id ON sync_logs(device_id)
+PCREATE INDEX IF NOT EXISTS index_sync_logs_is_uploaded ON sync_logs(is_uploaded)
+LCREATE INDEX IF NOT EXISTS index_sync_logs_timestamp ON sync_logs(timestamp)
+CREATE TABLE IF NOT EXISTS `Dependency` (`work_spec_id` TEXT NOT NULL, `prerequisite_id` TEXT NOT NULL, PRIMARY KEY(`work_spec_id`, `prerequisite_id`), FOREIGN KEY(`work_spec_id`) REFERENCES `WorkSpec`(`id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`prerequisite_id`) REFERENCES `WorkSpec`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )
+gCREATE TABLE IF NOT EXISTS `Preference` (`key` TEXT NOT NULL, `long_value` INTEGER, PRIMARY KEY(`key`))
+CREATE TABLE IF NOT EXISTS `SystemIdInfo` (`work_spec_id` TEXT NOT NULL, `generation` INTEGER NOT NULL DEFAULT 0, `system_id` INTEGER NOT NULL, PRIMARY KEY(`work_spec_id`, `generation`), FOREIGN KEY(`work_spec_id`) REFERENCES `WorkSpec`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )
+CREATE TABLE IF NOT EXISTS `WorkName` (`name` TEXT NOT NULL, `work_spec_id` TEXT NOT NULL, PRIMARY KEY(`name`, `work_spec_id`), FOREIGN KEY(`work_spec_id`) REFERENCES `WorkSpec`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )
+CREATE TABLE IF NOT EXISTS `WorkProgress` (`work_spec_id` TEXT NOT NULL, `progress` BLOB NOT NULL, PRIMARY KEY(`work_spec_id`), FOREIGN KEY(`work_spec_id`) REFERENCES `WorkSpec`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )
+CREATE TABLE IF NOT EXISTS `WorkSpec` (`id` TEXT NOT NULL, `state` INTEGER NOT NULL, `worker_class_name` TEXT NOT NULL, `input_merger_class_name` TEXT NOT NULL, `input` BLOB NOT NULL, `output` BLOB NOT NULL, `initial_delay` INTEGER NOT NULL, `interval_duration` INTEGER NOT NULL, `flex_duration` INTEGER NOT NULL, `run_attempt_count` INTEGER NOT NULL, `backoff_policy` INTEGER NOT NULL, `backoff_delay_duration` INTEGER NOT NULL, `last_enqueue_time` INTEGER NOT NULL DEFAULT -1, `minimum_retention_duration` INTEGER NOT NULL, `schedule_requested_at` INTEGER NOT NULL, `run_in_foreground` INTEGER NOT NULL, `out_of_quota_policy` INTEGER NOT NULL, `period_count` INTEGER NOT NULL DEFAULT 0, `generation` INTEGER NOT NULL DEFAULT 0, `next_schedule_time_override` INTEGER NOT NULL DEFAULT 9223372036854775807, `next_schedule_time_override_generation` INTEGER NOT NULL DEFAULT 0, `stop_reason` INTEGER NOT NULL DEFAULT -256, `required_network_type` INTEGER NOT NULL, `requires_charging` INTEGER NOT NULL, `requires_device_idle` INTEGER NOT NULL, `requires_battery_not_low` INTEGER NOT NULL, `requires_storage_not_low` INTEGER NOT NULL, `trigger_content_update_delay` INTEGER NOT NULL, `trigger_max_content_delay` INTEGER NOT NULL, `content_uri_triggers` BLOB NOT NULL, PRIMARY KEY(`id`))
+CREATE TABLE IF NOT EXISTS `WorkTag` (`tag` TEXT NOT NULL, `work_spec_id` TEXT NOT NULL, PRIMARY KEY(`tag`, `work_spec_id`), FOREIGN KEY(`work_spec_id`) REFERENCES `WorkSpec`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )
+CREATE TABLE IF NOT EXISTS `_new_SystemIdInfo` (
+CREATE TABLE IF NOT EXISTS `_new_WorkSpec` (
+CREATE TABLE IF NOT EXISTS `_new_WorkSpec` (`id` TEXT NOT NULL, `state` INTEGER NOT NULL, `worker_class_name` TEXT NOT NULL, `input_merger_class_name` TEXT NOT NULL, `input` BLOB NOT NULL, `output` BLOB NOT NULL, `initial_delay` INTEGER NOT NULL, `interval_duration` INTEGER NOT NULL, `flex_duration` INTEGER NOT NULL, `run_attempt_count` INTEGER NOT NULL, `backoff_policy` INTEGER NOT NULL, `backoff_delay_duration` INTEGER NOT NULL, `last_enqueue_time` INTEGER NOT NULL DEFAULT -1, `minimum_retention_duration` INTEGER NOT NULL, `schedule_requested_at` INTEGER NOT NULL, `run_in_foreground` INTEGER NOT NULL, `out_of_quota_policy` INTEGER NOT NULL, `period_count` INTEGER NOT NULL DEFAULT 0, `generation` INTEGER NOT NULL DEFAULT 0, `next_schedule_time_override` INTEGER NOT NULL DEFAULT 9223372036854775807, `next_schedule_time_override_generation` INTEGER NOT NULL DEFAULT 0, `stop_reason` INTEGER NOT NULL DEFAULT -256, `required_network_type` INTEGER NOT NULL, `requires_charging` INTEGER NOT NULL, `requires_device_idle` INTEGER NOT NULL, `requires_battery_not_low` INTEGER NOT NULL, `requires_storage_not_low` INTEGER NOT NULL, `trigger_content_update_delay` INTEGER NOT NULL, `trigger_max_content_delay` INTEGER NOT NULL, `content_uri_triggers` BLOB NOT NULL, PRIMARY KEY(`id`))
+CREATE TABLE IF NOT EXISTS `_new_WorkSpec` (`id` TEXT NOT NULL, `state` INTEGER NOT NULL, `worker_class_name` TEXT NOT NULL, `input_merger_class_name` TEXT NOT NULL, `input` BLOB NOT NULL, `output` BLOB NOT NULL, `initial_delay` INTEGER NOT NULL, `interval_duration` INTEGER NOT NULL, `flex_duration` INTEGER NOT NULL, `run_attempt_count` INTEGER NOT NULL, `backoff_policy` INTEGER NOT NULL, `backoff_delay_duration` INTEGER NOT NULL, `last_enqueue_time` INTEGER NOT NULL, `minimum_retention_duration` INTEGER NOT NULL, `schedule_requested_at` INTEGER NOT NULL, `run_in_foreground` INTEGER NOT NULL, `out_of_quota_policy` INTEGER NOT NULL, `period_count` INTEGER NOT NULL DEFAULT 0, `generation` INTEGER NOT NULL DEFAULT 0, `required_network_type` INTEGER NOT NULL, `requires_charging` INTEGER NOT NULL, `requires_device_idle` INTEGER NOT NULL, `requires_battery_not_low` INTEGER NOT NULL, `requires_storage_not_low` INTEGER NOT NULL, `trigger_content_update_delay` INTEGER NOT NULL, `trigger_max_content_delay` INTEGER NOT NULL, `content_uri_triggers` BLOB NOT NULL, PRIMARY KEY(`id`))
+CREATE TABLE IF NOT EXISTS `_new_WorkSpec` (`id` TEXT NOT NULL, `state` INTEGER NOT NULL, `worker_class_name` TEXT NOT NULL, `input_merger_class_name` TEXT, `input` BLOB NOT NULL, `output` BLOB NOT NULL, `initial_delay` INTEGER NOT NULL, `interval_duration` INTEGER NOT NULL, `flex_duration` INTEGER NOT NULL, `run_attempt_count` INTEGER NOT NULL, `backoff_policy` INTEGER NOT NULL, `backoff_delay_duration` INTEGER NOT NULL, `last_enqueue_time` INTEGER NOT NULL, `minimum_retention_duration` INTEGER NOT NULL, `schedule_requested_at` INTEGER NOT NULL, `run_in_foreground` INTEGER NOT NULL, `out_of_quota_policy` INTEGER NOT NULL, `period_count` INTEGER NOT NULL DEFAULT 0, `required_network_type` INTEGER NOT NULL, `requires_charging` INTEGER NOT NULL, `requires_device_idle` INTEGER NOT NULL, `requires_battery_not_low` INTEGER NOT NULL, `requires_storage_not_low` INTEGER NOT NULL, `trigger_content_update_delay` INTEGER NOT NULL, `trigger_max_content_delay` INTEGER NOT NULL, `content_uri_triggers` BLOB NOT NULL, PRIMARY KEY(`id`))
+CREATE TABLE IF NOT EXISTS `_new_WorkSpec` (`id` TEXT NOT NULL, `state` INTEGER NOT NULL, `worker_class_name` TEXT NOT NULL, `input_merger_class_name` TEXT, `input` BLOB NOT NULL, `output` BLOB NOT NULL, `initial_delay` INTEGER NOT NULL, `interval_duration` INTEGER NOT NULL, `flex_duration` INTEGER NOT NULL, `run_attempt_count` INTEGER NOT NULL, `backoff_policy` INTEGER NOT NULL, `backoff_delay_duration` INTEGER NOT NULL, `period_start_time` INTEGER NOT NULL, `minimum_retention_duration` INTEGER NOT NULL, `schedule_requested_at` INTEGER NOT NULL, `run_in_foreground` INTEGER NOT NULL, `out_of_quota_policy` INTEGER NOT NULL, `required_network_type` INTEGER NOT NULL, `requires_charging` INTEGER NOT NULL, `requires_device_idle` INTEGER NOT NULL, `requires_battery_not_low` INTEGER NOT NULL, `requires_storage_not_low` INTEGER NOT NULL, `trigger_content_update_delay` INTEGER NOT NULL, `trigger_max_content_delay` INTEGER NOT NULL, `content_uri_triggers` BLOB NOT NULL, PRIMARY KEY(`id`))
+CREATE TABLE IF NOT EXISTS `cloud_files` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `telegram_message_id` INTEGER NOT NULL, `file_id` TEXT NOT NULL, `file_unique_id` TEXT, `file_name` TEXT NOT NULL, `mime_type` TEXT, `size_bytes` INTEGER NOT NULL, `uploaded_at` INTEGER NOT NULL, `caption` TEXT, `share_link` TEXT, `checksum` TEXT, `uploader_tokens` TEXT DEFAULT '')
+CREATE TABLE IF NOT EXISTS `download_tasks` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `file_id` TEXT NOT NULL, `target_path` TEXT NOT NULL, `status` TEXT NOT NULL, `progress` INTEGER NOT NULL, `error` TEXT, `created_at` INTEGER NOT NULL, `completed_chunks_json` TEXT, `chunk_file_ids` TEXT, `temp_chunk_dir` TEXT, `total_chunks` INTEGER NOT NULL)
+CREATE TABLE IF NOT EXISTS `gallery_media` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `local_path` TEXT NOT NULL, `filename` TEXT NOT NULL, `mime_type` TEXT NOT NULL, `size_bytes` INTEGER NOT NULL, `date_taken` INTEGER NOT NULL, `date_modified` INTEGER NOT NULL, `width` INTEGER NOT NULL, `height` INTEGER NOT NULL, `duration_ms` INTEGER NOT NULL, `thumbnail_path` TEXT, `is_synced` INTEGER NOT NULL, `telegram_file_id` TEXT, `telegram_message_id` INTEGER, `telegram_file_unique_id` TEXT, `telegram_uploader_tokens` TEXT, `sync_error` TEXT, `last_sync_attempt` INTEGER NOT NULL, `deleted_at` INTEGER)
+CREATE TABLE IF NOT EXISTS `sync_logs` (`log_id` TEXT NOT NULL, `timestamp` INTEGER NOT NULL, `device_id` TEXT NOT NULL, `operation` TEXT NOT NULL, `table_name` TEXT NOT NULL, `primary_key` TEXT NOT NULL, `data_json` TEXT, `previous_data_json` TEXT, `is_uploaded` INTEGER NOT NULL, `telegram_message_id` INTEGER, `checksum` TEXT, PRIMARY KEY(`log_id`))
+CREATE TABLE IF NOT EXISTS `sync_metadata` (`key` TEXT NOT NULL, `value` TEXT NOT NULL, `updated_at` INTEGER NOT NULL, PRIMARY KEY(`key`))
+CREATE TABLE IF NOT EXISTS `upload_tasks` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `uri` TEXT NOT NULL, `display_name` TEXT NOT NULL, `size_bytes` INTEGER NOT NULL, `status` TEXT NOT NULL, `progress` INTEGER NOT NULL, `error` TEXT, `created_at` INTEGER NOT NULL, `file_id` TEXT, `completed_chunks_json` TEXT, `token_offset` INTEGER NOT NULL)
+9CREATE TABLE IF NOT EXISTS android_metadata (locale TEXT)
+CREATE TABLE IF NOT EXISTS gallery_media (
+XCREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)
+!DROP TABLE IF EXISTS `Dependency`
+!DROP TABLE IF EXISTS `Preference`
+#DROP TABLE IF EXISTS `SystemIdInfo`
+DROP TABLE IF EXISTS `WorkName`
+#DROP TABLE IF EXISTS `WorkProgress`
+DROP TABLE IF EXISTS `WorkSpec`
+DROP TABLE IF EXISTS `WorkTag`
+"DROP TABLE IF EXISTS `cloud_files`
+%DROP TABLE IF EXISTS `download_tasks`
+$DROP TABLE IF EXISTS `gallery_media`
+ DROP TABLE IF EXISTS `sync_logs`
+$DROP TABLE IF EXISTS `sync_metadata`
+#DROP TABLE IF EXISTS `upload_tasks`
+DROP TABLE IF EXISTS alarmInfo
+DROP TABLE `SystemIdInfo`
+DROP TABLE `WorkSpec`

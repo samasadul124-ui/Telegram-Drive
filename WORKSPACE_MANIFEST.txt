@@ -1,0 +1,63 @@
+CURRENT WORKSPACE CONTENTS
+==========================
+Workspace root: /home/user/Telegram-Drive
+Workspace limit: ~128 MB
+Clone size: 83 MB (shallow, --depth 1)
+Headroom: ~45 MB
+
+NOTE: node_modules/ and Rust target/ are git-ignored and MUST NOT be
+installed in this workspace (they would exceed the 128 MB limit).
+
+FILES / DIRECTORIES PRESENT
+---------------------------
+
+1. .git/
+   Purpose: Git repository data (shallow clone, 1 commit)
+   Required: YES (needed for commits/pushes)
+   Size: ~38 MB
+
+2. app/
+   Purpose: Tauri + React application source code
+   Required: YES
+   Size: ~35 MB (includes package-lock.json, src, src-tauri, screenshots)
+   Note: node_modules/ is NOT installed (would exceed limit)
+
+3. supporter-service/
+   Purpose: Cloudflare Worker for supporter payments
+   Required: YES (for reference / potential changes)
+   Size: ~3 MB
+
+4. Docs/
+   Purpose: Project documentation
+   Required: YES (for reference)
+   Size: ~7 MB
+
+5. screenshots/
+   Purpose: Application screenshots
+   Required: NO (not needed for code changes)
+   Action: Can be deleted if workspace space is needed
+
+6. AI_WORKSPACE_STATE.md
+   Purpose: Persistent AI handoff state file
+   Required: YES (must be maintained and committed)
+
+7. WORKSPACE_MANIFEST.txt
+   Purpose: This file — tracks workspace contents
+   Required: YES (local only, not critical)
+
+8. .env.example
+   Purpose: Safe environment variable template
+   Required: YES (commit to repo)
+
+9. *.md (top-level docs: README, AGENTS, CHANGELOG, etc.)
+   Purpose: Upstream documentation
+   Required: REFERENCE (read before modifying relevant areas)
+   Action: Do not delete; they are part of the repo
+
+WORKSPACE RULES
+---------------
+- Do NOT run `npm install` in this workspace (node_modules > 200 MB).
+- Do NOT run `cargo build` (target/ > 1 GB).
+- If more space is needed, delete `screenshots/` first (~several MB).
+- Delete the shallow clone and re-clone if a clean state is needed.
+- After each commit+push, verify remote state before deleting local files.

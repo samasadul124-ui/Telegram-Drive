@@ -1,0 +1,6 @@
+576cb4507401d6d0e2e0a242a49bee1069b55c06fa864868d9877db8bc18a559  /mnt/data/com.telegram.cloud_1.2.0 (1).apk
+8ad3d623a99bacbfb19ea08b4307bac81d4437ed5f170e48922f2054703e64d6  /tmp/tg/classes.dex
+e668853d1ccd07513d778fd14eceb48ceea28a98302bc8b94c2a822c9d19cec7  /tmp/tg/lib/arm64-v8a/libtelegramcloud_core.so
+4c78ecaebc2ad888c03bbf1d9911ca2b03e1a0677890e79cc72e7aa2dfd13288  /tmp/tg/lib/armeabi-v7a/libtelegramcloud_core.so
+d63a8d6bc0bb1bb1575e201f5c4d6bbcda7b9464bb309fb2f88daa6e1ee4a57b  /tmp/tg/lib/arm64-v8a/libsqlcipher.so
+4790ca6bbf562e6f5e477ed4ca73c0db60a0d0413a702d02884a35a67e6a7980  /tmp/tg/lib/armeabi-v7a/libsqlcipher.so
